@@ -1,9 +1,8 @@
-
 var socket = io();
-var video = document.getElementById('video');
-var screenVideo = document.getElementById('screen');
-var startButton = document.getElementById('startbutton');
-var stopButton = document.getElementById('stopbutton');
+var video = document.getElementById("video");
+var screenVideo = document.getElementById("screen");
+var startButton = document.getElementById("startbutton");
+var stopButton = document.getElementById("stopbutton");
 var cameraStreaming = false;
 var screenStreaming = false;
 
@@ -17,60 +16,56 @@ var dc = null;
 
 const SLICE_SIZE = 10000;
 
-
 let cameraRecorder = null;
 let screenRecorder = null;
 
 let cameraBuffer = [];
 let screenBuffer = [];
 
-
 let cameraRecorderOption = {
-  type: 'video',
-  mimeType: 'video/webm;codecs=vp8',
+  type: "video",
+  mimeType: "video/webm;codecs=vp8",
   timeSlice: 10000,
   frameRate: 15,
 
   ondataavailable: function (blob) {
-    console.log(blob)
+    console.log(blob);
 
     sendBlob("camerablob", blob);
     // socket.emit("camerablob", { blob });
     // invokeSaveAsDialog(blob);
   },
-}
+};
 
 let screenRecorderOption = {
-  type: 'video',
-  mimeType: 'video/webm;codecs=vp8',
+  type: "video",
+  mimeType: "video/webm;codecs=vp8",
   timeSlice: 100,
   frameRate: 15,
   ondataavailable: function (blob) {
-    console.log(blob)
+    console.log(blob);
     sendBlob("screenblob", blob);
 
     // socket.emit("screenblob", { blob });
   },
-}
-
+};
 
 let cameraOption = {
   audio: true,
   video: {
     width: 640,
     height: 480,
-    facingMode: "user"
-  }
-}
+    facingMode: "user",
+  },
+};
 
 let screenOption = {
   audio: true,
   video: {
     width: 1280,
     height: 720,
-  }
-}
-
+  },
+};
 
 function sendBlob(type, blob) {
   // socket.emit(type, { blob })
@@ -97,10 +92,9 @@ function sendBlob(type, blob) {
     let newBlob = blob.slice(start, end);
     socket.emit(type, { blob: newBlob });
   }
-
 }
 
-socket.on('connection', function () {
+socket.on("connection", function () {
   console.log("connected");
   // console.log("send buffer");
   // if (screenBuffer.length != 0) {
@@ -117,12 +111,11 @@ socket.on('connection', function () {
   // }
 });
 
-socket.on('open', socketOpen);
-socket.on('disconnect', socketClose);
+socket.on("open", socketOpen);
+socket.on("disconnect", socketClose);
 
-
-
-navigator.mediaDevices.getUserMedia(cameraOption)
+navigator.mediaDevices
+  .getUserMedia(cameraOption)
   .then(function (stream) {
     localStream = stream;
     video.srcObject = stream;
@@ -133,62 +126,63 @@ navigator.mediaDevices.getUserMedia(cameraOption)
     console.log("An error occured! " + err);
   });
 
-navigator.mediaDevices.getDisplayMedia(screenOption)
-  .then(function (stream) {
-    screenStream = stream;
-    screenVideo.srcObject = stream;
-    screenVideo.muted = true;
-    screenVideo.play();
-  });
+navigator.mediaDevices.getDisplayMedia(screenOption).then(function (stream) {
+  screenStream = stream;
+  screenVideo.srcObject = stream;
+  screenVideo.muted = true;
+  screenVideo.play();
+});
 
-video.addEventListener('canplay', function (ev) {
-  if (!cameraStreaming) {
-    height = video.videoHeight / (video.videoWidth / width);
+video.addEventListener(
+  "canplay",
+  function (ev) {
+    if (!cameraStreaming) {
+      height = video.videoHeight / (video.videoWidth / width);
 
-    video.setAttribute('width', width);
-    video.setAttribute('height', height);
-    cameraStreaming = true;
-  }
-}, false);
+      video.setAttribute("width", width);
+      video.setAttribute("height", height);
+      cameraStreaming = true;
+    }
+  },
+  false
+);
 
-screenVideo.addEventListener('canplay', function (ev) {
-  if (!screenStreaming) {
-    height = screenVideo.videoHeight / (screenVideo.videoWidth / width);
+screenVideo.addEventListener(
+  "canplay",
+  function (ev) {
+    if (!screenStreaming) {
+      height = screenVideo.videoHeight / (screenVideo.videoWidth / width);
 
-    screenVideo.setAttribute('width', width);
-    screenVideo.setAttribute('height', height);
-    screenStreaming = true;
+      screenVideo.setAttribute("width", width);
+      screenVideo.setAttribute("height", height);
+      screenStreaming = true;
+    }
+  },
+  false
+);
 
-  }
-}, false);
-
-startButton.addEventListener('click', function (ev) {
+startButton.addEventListener("click", function (ev) {
   if (!localStream || !screenStream || !socket) {
-    alert('尚未准备好');
+    alert("尚未准备好");
   }
 
-  socket.emit('startRecording');
+  socket.emit("startRecording");
   cameraRecorder = new RecordRTC(localStream, cameraRecorderOption);
   screenRecorder = new RecordRTC(screenStream, screenRecorderOption);
   cameraRecorder.startRecording();
   screenRecorder.startRecording();
+});
 
-})
-
-
-stopButton.addEventListener('click', function (ev) {
+stopButton.addEventListener("click", function (ev) {
   cameraRecorder.stopRecording();
   screenRecorder.stopRecording();
-  socket.emit('endRecording');
-})
+  socket.emit("endRecording");
+});
 
 function socketOpen() {
   console.log("open");
-
 }
 
 function socketClose(reason) {
   console.log("close: ", reason);
 }
-
-
