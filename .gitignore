@@ -103,6 +103,9 @@ dist
 # TernJS port file
 .tern-port
 
+# vsc config
+.vscode/
+
 #webm mp4
 *.webm
 *.mp4
