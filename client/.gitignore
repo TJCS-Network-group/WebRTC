@@ -104,7 +104,7 @@ dist
 .tern-port
 
 # vsc config
-.vscode/
+#.vscode/
 
 #webm mp4
 *.webm
