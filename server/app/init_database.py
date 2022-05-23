@@ -18,8 +18,7 @@ from werkzeug.security import generate_password_hash
 
 
 def fake_data():  #填一些假数据进去
-    print("MD5: ",
-          generate_password_hash(password="1234567", method="pbkdf2:md5"))
+    
     Student.create(stu_grade="2019",
                    stu_no="1234567",
                    stu_name="张三",
@@ -36,7 +35,7 @@ def fake_data():  #填一些假数据进去
     Student.create(stu_grade="0000",
                    stu_no="9999999",
                    stu_name="监控",
-                   stu_password=generate_password_hash(password="1234567",
+                   stu_password=generate_password_hash(password="9999999",
                                                        method="pbkdf2:md5"),
                    stu_sex="男",
                    stu_class_fname="计算机",

@@ -26,4 +26,4 @@ def root_index():
 
 @user_blue.route('/index', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html',current_user=current_user)
+    return render_template('index.html', current_user=current_user)
