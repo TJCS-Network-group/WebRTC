@@ -1,4 +1,15 @@
 {
-  "python.formatting.provider": "yapf",
-  "html.format.enable": true
+    "python.formatting.provider": "yapf",
+    "html.format.enable": true,
+    "files.autoGuessEncoding": false,
+    "files.encoding": "gbk"
+    /*"[plaintext]": {
+        "files.encoding": "gbk"
+    },
+    "[log]": {
+        "files.encoding": "gbk"
+    },
+    "[batch]": {
+        "files.encoding": "gbk"
+    }*/
 }

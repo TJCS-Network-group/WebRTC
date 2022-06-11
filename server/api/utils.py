@@ -18,6 +18,14 @@ import datetime
 import time
 import random
 
+# statusCode:
+# 200：操作成功返回。
+# 201：表示创建成功，POST 添加数据成功后必须返回此状态码。
+# 400：请求格式不对。
+# 401：未授权。（User/Admin）等
+# 404：请求的资源未找到。
+# 500：内部程序错误。
+
 
 def make_response_json(statusCode: int = 200,
                        message: str = "",
