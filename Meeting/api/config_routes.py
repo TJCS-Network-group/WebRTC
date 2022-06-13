@@ -15,17 +15,20 @@ def get_config(path: str) -> dict:
         dict: {"": }
     """
     data = dict()
-    cf = configparser.ConfigParser(allow_no_value=True)#没有值，特殊处理
+    #没有值，特殊处理；处理注释
+    cf = configparser.ConfigParser(allow_no_value=True,
+                                   comment_prefixes=('#', ';'),
+                                   inline_comment_prefixes=(';', '#'))
     cf.read(path)
     secs = cf.sections()
     for section in secs:  #获取每个[section]
-        if section=="root-dir":#没有值，特殊处理
+        if section == "root-dir":  #没有值，特殊处理
             print(cf.options(section))
-            data[section]=cf.options(section)[0]
+            data[section] = cf.options(section)[0]
             continue
         option_data = dict()
         for option, value in cf.items(section):  #对每个section里的items
-            option_data[option] = value
+            option_data[option] = int(value)  #frame和断联时间都是int
         data[section] = option_data
     return data
 
@@ -51,5 +54,10 @@ def _get_config():
     except:
         return make_response_json(404, "用户不存在")
     target_path = f"./etc/webrtc-{id}.conf"  #配置文件存在哪里，这个之后可以改
-    data = get_config(target_path)
+    if not os.path.exists(target_path):
+        return make_response_json(404,"未找到该用户的配置文件")
+    try:
+        data = get_config(target_path)
+    except Exception as e:
+        return make_response_json(500, "程序发生错误："+repr(e))
     return make_response_json(data=data)
