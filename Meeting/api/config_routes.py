@@ -22,6 +22,7 @@ def get_config(path: str) -> dict:
         if section=="root-dir":#没有值，特殊处理
             print(cf.options(section))
             data[section]=cf.options(section)[0]
+            continue
         option_data = dict()
         for option, value in cf.items(section):  #对每个section里的items
             option_data[option] = value
@@ -51,4 +52,4 @@ def _get_config():
         return make_response_json(404, "用户不存在")
     target_path = f"./etc/webrtc-{id}.conf"  #配置文件存在哪里，这个之后可以改
     data = get_config(target_path)
-    return make_response_json(data)
+    return make_response_json(data=data)
