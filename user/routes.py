@@ -23,7 +23,14 @@ def teardown_request(exc):  #exc必须写上
 def root_index():
     return redirect(url_for('user.index'))  # 重定向到/user/index
 
+@user_blue.route('/change_password',methods=['GET'])
+def change_password():
+    if not current_user.is_authenticated:
+        return render_template('404.html', error_code=401, error_text="请先登录")
+    return render_template('change_password.html')
 
-@user_blue.route('/index', methods=['GET', 'POST'])
+@user_blue.route('/index', methods=['GET'])
 def index():
-    return render_template('index.html', current_user=current_user)
+    if not current_user.is_authenticated:
+        return render_template('404.html', error_code=401, error_text="请先登录")
+    return render_template('user=-index.html')

@@ -25,7 +25,7 @@ class Student(UserMixin, BaseModel):
     同时继承自BaseModel，直接关联db，并且也继承了Model Model有提供增删查改的函数
     """
     #id = pw.AutoField()  # 主键，不显式定义的话peewee默认定义一个自增的id
-    stu_grade = pw.CharField(verbose_name="年级", max_length=4, null=False)
+    stu_grade = pw.IntegerField(verbose_name="年级", null=False)
     stu_no = pw.CharField(verbose_name="学号", max_length=8, null=False)
     stu_name = pw.CharField(verbose_name="名字", max_length=16, null=False)
     stu_password = pw.CharField(verbose_name="密码的md5码",

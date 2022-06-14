@@ -19,16 +19,20 @@ def get_config(path: str) -> dict:
     cf = configparser.ConfigParser(allow_no_value=True,
                                    comment_prefixes=('#', ';'),
                                    inline_comment_prefixes=(';', '#'))
-    cf.read(path)
+    cf.read(path,encoding="gbk")
     secs = cf.sections()
     for section in secs:  #获取每个[section]
         if section == "root-dir":  #没有值，特殊处理
-            print(cf.options(section))
+            #print(cf.options(section))
             data[section] = cf.options(section)[0]
             continue
         option_data = dict()
         for option, value in cf.items(section):  #对每个section里的items
-            option_data[option] = int(value)  #frame和断联时间都是int
+            try:
+                value=int(value)
+            except:
+                pass
+            option_data[option] = value  #frame和断联时间都是int
         data[section] = option_data
     return data
 

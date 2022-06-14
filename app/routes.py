@@ -52,16 +52,23 @@ def index():
 
 @app.route('/login', methods=['GET'])
 def login():
-    # 判断当前用户是否验证，如果通过的话返回首页
+    # 判断当前用户是否验证，如果通过的话返回录屏页
     if current_user.is_authenticated:
         return redirect(url_for('user.index'))
     return render_template('password_login.html')
 
 
 @app.route('/video', methods=['GET'])
-def video_render():
+def video():
     return render_template('video.html')
 
 @app.route('/video_websocket', methods=['GET'])
-def video_websocket_render():
+def video_websocket():
     return render_template('video_websocket.html')
+
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template("404.html", message=error, error_code=404)
+

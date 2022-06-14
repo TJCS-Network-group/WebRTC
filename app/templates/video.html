@@ -114,8 +114,8 @@
     }
 
     function getConfig() {
-        $.get("/api/get_config", {}, function (ret) {
-            if (ret.statusCode == 400) {
+        $.get("/api/get_config", {id:"{{current_user.id}}"}, function (ret) {
+            if (ret.statusCode != 200) {
                 alert(ret.message);
             } else {
                 console.log(ret)
@@ -127,7 +127,7 @@
     console.log(getCookie("account"))
     getConfig();
     $.get("/api/video/initialize", {}, function (ret) {
-        if (ret.statusCode == 400) {
+        if (ret.statusCode != 200) {
             alert(ret.message);
         } else {
             console.log("initialize", ret)
@@ -267,11 +267,11 @@
 
     startButton.addEventListener('click', function (ev) {
         if (!cameraStream || !screenStream) {
-            alert('尚未准备�?');
+            alert('尚未准备');
         }
 
         $.get("/api/video/start_record", {}, function (ret) {
-            if (ret.statusCode == 400) {
+            if (ret.statusCode != 200) {
                 alert(ret.message);
             } else {
                 console.log("start record", ret)
@@ -310,7 +310,7 @@
         // screenRecorder.stopRecording();
         setTimeout(() => {
             $.get("/api/video/end_record", {}, function (ret) {
-                if (ret.statusCode == 400) {
+                if (ret.statusCode != 200) {
                     alert(ret.message);
                 } else {
                     console.log("end record", ret)
