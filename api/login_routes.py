@@ -40,8 +40,10 @@ def _login(stu_no, password=None):
         return make_response_json(400, "您的账号已被冻结")
 
     # 记住登录状态，同时维护current_user
-    login_user(user, True, datetime.timedelta(days=30))
 
+    login_user(user, True, datetime.timedelta(days=30))
+    if user.check_password(stu_no):
+        return make_response_json(data={"url":url_for('user.change_password')})
     resp = make_response_json(data={"url": url_for('video')})
     resp.set_cookie("account", stu_no)
     return resp
