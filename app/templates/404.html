@@ -2,7 +2,7 @@
 <html class="no-js" lang="">
     <head>
         <meta charset="utf-8" />
-        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />    
     </head>
     <body>
         <main>
@@ -12,21 +12,23 @@
                         <div class="col-lg-6 col-md-10">
                             <div class="error-content text-center">
                                 <div class="error_txt" id="error_code">404</div>
-                                <p id="error_text">The page you are looking for was moved, removed, renamed or might never existed.</p>
-                                <a href="{{url_for('index')}}" class="btn rounded-btn">Back To Home</a>
+                                <p id="error_text">404 Not Found.</p>
+                                <a href="{{url_for('login')}}" class="btn rounded-btn">返回登录页面</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
         </main>
-    <script>
-        $(document).ready(function () {
-            error_code = "{{error_code|safe}}";
-            error_text = "{{message|safe}}";
-            if (error_text != "") $("#error_text").text(error_text);
-            if (error_code != "") $("#error_code").text(error_code);
-        });
-    </script>
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                error_code = "{{error_code}}";
+                error_text = "{{error_text}}";
+                
+                if (error_text != "") $("#error_text").text(error_text);
+                if (error_code != "") $("#error_code").text(error_code);
+            });
+        </script>
     </body>
 </html>
