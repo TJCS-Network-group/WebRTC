@@ -2,7 +2,8 @@
 # -*- coding: gbk -*-
 from api.utils import *
 from api import api_blue
-
+from werkzeug.security import generate_password_hash
+from flask import request
 
 def judge_password(password: str):
     if type(password) != str:
@@ -58,3 +59,23 @@ def login_using_password():
     #    return make_response_json(quick_response=jp)
     session['account'] = str(user_no)
     return _login(user_no, password)
+
+
+
+@api_blue.route("/change_password",methods=["POST"])
+def change_password():
+    if not current_user.is_authenticated:
+        return make_response_json(400,"请先登录",data={"url":url_for('login')})
+    try:
+        passwd = request.get_json()["password"]
+    except Exception as e:
+        return make_response_json(400,"无新密码")
+    if current_user.check_password(passwd):
+        return make_response_json(400,"新密码不能与原密码一致")
+    if not check_password_pattern(passwd):
+        return make_response_json(400,"新密码不符合网站标准")
+    current_user.stu_password =generate_password_hash(password=passwd,
+                                                       method="pbkdf2:md5")
+    current_user.save()
+    return make_response_json(200,"修改成功",data={"url":url_for('video')})
+
