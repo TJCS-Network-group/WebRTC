@@ -76,9 +76,9 @@ def check_password_pattern(password:str) -> bool:
     small_letter = re.compile("[a-z]")
     big_letter = re.compile("[A-Z]")
     special = re.compile("[+\-\*_&%]")
-    s = [reps.findall(password) for reps in [num,small_letter,big_letter,special]]
+    # s = [reps.findall(password) for reps in [num,small_letter,big_letter,special]]
     result = [len(reps.findall(password)) for reps in [num,small_letter,big_letter,special]]
-    print(s,result)
+    # print(s,result)
     if 0 in result or sum(result) != len(password):
         return False
     return True
