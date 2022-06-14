@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ch_CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>WebRTC-Meeting</title>
+  <style>
+    canvas {
+      display: none
+    }
+  </style>
+
+</head>
+
+<body>
+  <video id="camera">Video stream not available.</video>
+  <video id="screen">Video stream not available.</video>
+  <!-- <canvas id="camera-canvas"></canvas>
+  <canvas id="screen-canvas"></canvas> -->
+  <br>
+  <input type="text" id="name">
+  <button id="startbutton">开始录制</button>
+  <button id="stopbutton">停止录制</button>
+  <!-- <script src="/node_modules/socket.io/client-dist/socket.io.js"></script> -->
+  <script src="https://cdn.socket.io/3.1.2/socket.io.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</body>
+<script>
+  
+
+
+  var websocket_url = 'ws://' + document.domain + ':' + location.port + '/video';
+  var socket = io.connect(websocket_url);
+  var cameraVideo = document.getElementById('camera');
+  var screenVideo = document.getElementById('screen');
+  // var cameraCanvas = document.getElementById('camera-canvas');
+  // var screenCanvas = document.getElementById('screen-canvas');
+  var startButton = document.getElementById('startbutton');
+  var stopButton = document.getElementById('stopbutton');
+  var cameraStreaming = false;
+  var screenStreaming = false;
+
+  var cameraStream = null;
+  var screenStream = null;
+
+  var width = 500;
+  var height = null;
+  let peer = null;
+  var dc = null;
+
+
+
+  const CameraWidth = 640;
+  const CameraHeight = 480;
+  const ScreenWidth = 1920;
+  const ScreenHeight = 1080;
+
+  let cameraRecorder = null;
+  let screenRecorder = null;
+
+
+  let cameraBuffer = [];
+  let screenBuffer = [];
+
+
+  const SLICE_SIZE = 10000;
+  const TIME_SLICE = 1000;
+  const FRAME_RATE = 15;
+
+  let cameraOption = {
+    audio: true,
+    video: {
+      width: 640,
+      height: 480,
+      facingMode: "user",
+      frameRate: {
+        ideal: FRAME_RATE,
+        max: FRAME_RATE,
+      },
+    }
+  }
+
+  let screenOption = {
+    audio: true,
+    video: {
+      width: 1920,
+      height: 1080,
+      frameRate: {
+        ideal: FRAME_RATE,
+        max: FRAME_RATE,
+      },
+    }
+  }
+
+  let cameraRecorderOptions = {
+    mimeType: "video/webm; codecs=vp8",
+    audioBitsPerSecond: 128000,
+    videoBitsPerSecond: 500000
+    // mimeType: "video/mp4"
+  };
+
+  let screenRecorderOptions = {
+    mimeType: "video/webm; codecs=vp8",
+    audioBitsPerSecond: 128000,
+    videoBitsPerSecond: 2500000
+    // mimeType: "video/mp4"
+  };
+
+
+  function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+      var c = ca[i].trim();
+      if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+    }
+    return "";
+  }
+
+
+  console.log(getCookie("account"))
+
+
+
+
+
+  function sendBlob(type, blob) {
+    // socket.emit(type, { blob })
+    let blobSize = blob.size;
+    var sliceCount = Math.ceil(blob.size / SLICE_SIZE);
+
+    // if (!socket.connected) {
+    //   console.log(type, "stored in buffer");
+    //   if (type == "screenblob") {
+    //     screenBuffer.push(blob);
+    //   }
+    //   else if (type == "camerablob") {
+    //     cameraBuffer.push(blob);
+    //   }
+    //   return;
+    // }
+
+
+    // socket.emit(type, {blob});
+    for (let i = 0; i < sliceCount; i++) {
+      let start = i * SLICE_SIZE;
+      let end = start + SLICE_SIZE;
+      if (end > blobSize) {
+        end = blobSize;
+      }
+      let newBlob = blob.slice(start, end);
+      socket.emit(type, { blob: newBlob });
+    }
+    socket.emit(type + "end");
+  }
+
+  socket.on('connection', function () {
+    console.log("connected");
+    // console.log("send buffer");
+    // if (screenBuffer.length != 0) {
+    //   for (var blob in screenBuffer) {
+    //     socket.emit("screenblob", { blob })
+    //   }
+    //   screenBuffer = [];
+    // }
+    // if (cameraBuffer.length != 0) {
+    //   for (var blob in cameraBuffer) {
+    //     socket.emit("camerablob", { blob })
+    //   }
+    //   cameraBuffer = [];
+    // }
+  });
+
+  socket.on('connect', socketOpen);
+  socket.on('disconnect', socketClose);
+
+
+
+  navigator.mediaDevices.getUserMedia(cameraOption)
+    .then(function (stream) {
+      cameraStream = stream;
+      cameraVideo.srcObject = stream;
+      cameraVideo.muted = true;
+      cameraVideo.play();
+      // cameraVideo.setAttribute('width', CameraWidth);
+      // cameraVideo.setAttribute('height', CameraHeight);
+      // cameraCanvas.setAttribute('width', CameraWidth);
+      // cameraCanvas.setAttribute('height', CameraHeight);
+      // playCanvas(cameraVideo, cameraCanvas.getContext('2d'), CameraWidth, CameraHeight)
+    })
+    .catch(function (err) {
+      console.log("An error occured! " + err);
+    });
+
+  navigator.mediaDevices.getDisplayMedia(screenOption)
+    .then(function (stream) {
+      screenStream = stream;
+      screenVideo.srcObject = stream;
+      screenVideo.muted = true;
+      screenVideo.play();
+      // screenVideo.setAttribute('width', ScreenWidth);
+      // screenVideo.setAttribute('height', ScreenHeight);
+      // screenCanvas.setAttribute('width', ScreenWidth);
+      // screenCanvas.setAttribute('height', ScreenHeight);
+      // playCanvas(screenVideo, screenCanvas.getContext('2d'), ScreenWidth, ScreenHeight)
+    });
+
+  // function playCanvas(srcvideo, ctx, width, height) {
+  //   ctx.drawImage(srcvideo, 0, 0, width, height)
+  //   requestAnimationFrame(() => {
+  //     playCanvas(srcvideo, ctx, width, height)
+  //   })
+  // }
+
+
+  cameraVideo.addEventListener('canplay', function (ev) {
+    if (!cameraStreaming) {
+      height = cameraVideo.videoHeight / (cameraVideo.videoWidth / width);
+
+      cameraVideo.setAttribute('width', width);
+      cameraVideo.setAttribute('height', height);
+      cameraStreaming = true;
+    }
+  }, false);
+
+  screenVideo.addEventListener('canplay', function (ev) {
+    if (!screenStreaming) {
+      height = screenVideo.videoHeight / (screenVideo.videoWidth / width);
+
+      screenVideo.setAttribute('width', width);
+      screenVideo.setAttribute('height', height);
+      screenStreaming = true;
+
+    }
+  }, false);
+
+  startButton.addEventListener('click', function (ev) {
+    if (!cameraStream || !screenStream || !socket) {
+      alert('尚未准备好');
+    }
+
+    socket.emit('startRecording');
+
+    // let cameraVideoStream = cameraCanvas.captureStream(FRAME_RATE)
+    // let screenVideoStream = screenCanvas.captureStream(FRAME_RATE)
+    // cameraVideoStream.addTrack(cameraStream.getTracks()[0])
+
+
+    cameraRecorder = new MediaRecorder(cameraStream, cameraRecorderOptions);
+    screenRecorder = new MediaRecorder(screenStream, screenRecorderOptions);
+    cameraRecorder.ondataavailable = (event) => {
+      console.log(event.data)
+      sendBlob("camerablob", event.data);
+    };
+    screenRecorder.ondataavailable = (event) => {
+      console.log(event.data)
+      sendBlob("screenblob", event.data);
+    };
+    cameraRecorder.start(TIME_SLICE);
+    screenRecorder.start(TIME_SLICE);
+    // cameraRecorder = new RecordRTC(localStream, cameraRecorderOption);
+    // screenRecorder = new RecordRTC(screenStream, screenRecorderOption);
+    // cameraRecorder.startRecording();
+    // screenRecorder.startRecording();
+
+  })
+
+
+  stopButton.addEventListener('click', function (ev) {
+    cameraRecorder.stop();
+    screenRecorder.stop();
+    // cameraRecorder.stopRecording();
+    // screenRecorder.stopRecording();
+    setTimeout(() => {
+      socket.emit('endRecording');
+    }, 500);
+
+  })
+
+  function socketOpen() {
+    console.log("open");
+    socket.emit("initialize")
+
+  }
+
+  function socketClose(reason) {
+    
+    console.log("close: ", reason);
+  }
+
+</script>
+
+</html>

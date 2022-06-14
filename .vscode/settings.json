@@ -1,0 +1,15 @@
+{
+    "python.formatting.provider": "yapf",
+    "html.format.enable": true,
+    "files.autoGuessEncoding": false,
+    "files.eol": "\n",
+    "[html]":{
+        "files.encoding": "utf8"
+    },
+    "[python]": {
+        "files.encoding": "gbk"
+    },
+    "[conf]":{"files.encoding": "gbk"},
+    "editor.tabSize": 4,
+    "editor.formatOnSave": true,
+}
