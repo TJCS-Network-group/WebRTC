@@ -5,21 +5,7 @@ from api import api_blue
 from werkzeug.security import generate_password_hash
 from flask import request
 
-def judge_password(password: str):
-    if type(password) != str:
-        return [400, "密码格式错误"]
-    if len(password) < 6:
-        return [400, "密码过短"]
-    if len(password) > 32:
-        return [400, "密码过长"]
-    pattern = re.compile(r'[a-zA-Z0-9_-]')
-    result = pattern.findall(password)
-    if len(result) != len(password):
-        return [400, "密码含有非法字符"]
-    return [200, "验证通过"]
-
-
-def _login(stu_no, password=None):
+def check_and_login(stu_no, password=None):
     need=[Student.id,Student.stu_grade,Student.stu_password,Student.stu_enable]
     users = Student.select(*need).where(Student.stu_no == stu_no)
     if users.count()==0:#没找到
@@ -45,20 +31,32 @@ def _login(stu_no, password=None):
     login_user(user, True, datetime.timedelta(days=30))
     if user.check_password(stu_no):
         return make_response_json(data={"url":url_for('user.change_password')})
-    resp = make_response_json(data={"url": url_for('video')})
+    if user.stu_userlevel==User_level.Normal.value:
+        target_url=url_for('video')
+    elif user.stu_userlevel==User_level.Admin.value:
+        target_url=url_for('admin')
+    resp = make_response_json(data={"url": target_url})
     resp.set_cookie("account", stu_no)
     return resp
 
+def check_password_pattern(password:str) -> bool:
+    num = re.compile("[0-9]")
+    small_letter = re.compile("[a-z]")
+    big_letter = re.compile("[A-Z]")
+    special = re.compile("[+\-\*_&%]")
+    # s = [reps.findall(password) for reps in [num,small_letter,big_letter,special]]
+    result = [len(reps.findall(password)) for reps in [num,small_letter,big_letter,special]]
+    # print(s,result)
+    if 0 in result or sum(result) != len(password):
+        return False
+    return True
 
 @api_blue.route('/login_using_password', methods=['POST'])
 def login_using_password():
     user_no = request.form.get('user_no')
     password = request.form.get('password')
-    #jp = judge_password(password)
-    #if jp[0] != 200:
-    #    return make_response_json(quick_response=jp)
     session['account'] = str(user_no)
-    return _login(user_no, password)
+    return check_and_login(user_no, password)
 
 
 

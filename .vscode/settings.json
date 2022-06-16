@@ -1,9 +1,7 @@
 {
     "python.formatting.provider": "yapf",
-    "html.format.enable": true,
     "files.autoGuessEncoding": false,
     "files.eol": "\n",
-    "files.encoding": "gbk",
     "[html]": {
         "files.encoding": "utf8"
     },
@@ -11,6 +9,12 @@
         "files.encoding": "gbk"
     },
     "[conf]": { "files.encoding": "gbk" },
+    "[markdown]": {
+        "editor.unicodeHighlight.ambiguousCharacters": false,
+        "editor.unicodeHighlight.invisibleCharacters": false,
+        "editor.wordWrap": "on",
+        "files.encoding": "utf8"
+    },
     "editor.tabSize": 4,
     "editor.formatOnSave": true
 }

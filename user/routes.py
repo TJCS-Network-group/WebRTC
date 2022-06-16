@@ -19,11 +19,6 @@ def teardown_request(exc):  #exc必须写上
         database.close()
 
 
-@user_blue.route("/", methods=['GET', 'POST'])
-def root_index():
-    return redirect(url_for('user.index'))  # 重定向到/user/index
-
-
 @user_blue.route('/change_password', methods=['GET'])
 def change_password():
     if not current_user.is_authenticated:

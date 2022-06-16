@@ -1,14 +1,14 @@
 # WebRTC
 
-`建议在同一台服务器上开不同repo协同编辑，可以用不同端口`
+`寤鸿鍦ㄥ悓涓�鍙版湇鍔″櫒涓婂紑涓嶅悓repo鍗忓悓缂栬緫锛屽彲浠ョ敤涓嶅悓绔彛`
 
-阻止main.py更新即可（当然，端口这种东西其实应该放配置文件）
+闃绘main.py鏇存柊鍗冲彲锛堝綋鐒讹紝绔彛杩欑涓滆タ鍏跺疄搴旇鏀鹃厤缃枃浠讹級
 
 ```
 git update-index --assume-unchanged main.py
 ```
 
-如果需要恢复对文件的版本控制，执行以下操作
+濡傛灉闇�瑕佹仮澶嶅鏂囦欢鐨勭増鏈帶鍒讹紝鎵ц浠ヤ笅鎿嶄綔
 
 ```
 git update-index --no-assume-unchanged main.py
