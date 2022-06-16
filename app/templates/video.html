@@ -65,7 +65,7 @@
 
 
     const SLICE_SIZE = 10000;
-    const TIME_SLICE = 1000;
+    const TIME_SLICE = 10000;
     const FRAME_RATE = 15;
 
     let cameraOption = {
@@ -84,8 +84,8 @@
     let screenOption = {
         audio: true,
         video: {
-            width: 1280,
-            height: 720,
+            width: 720,
+            height: 480,
             frameRate: {
                 ideal: FRAME_RATE,
                 max: FRAME_RATE,

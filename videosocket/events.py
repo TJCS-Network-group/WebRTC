@@ -45,23 +45,23 @@ def mkdir(path):
 
 
 
-@socketio.on('connect', namespace="/video")
+@socketio.on('connect', namespace="/video_socket")
 def connect():
     print("connect..")
 
-@socketio.on('disconnect', namespace="/video")
+@socketio.on('disconnect', namespace="/video_socket")
 def disconnect():
     print("disconnect..."+session.get('account'))
     # os._exit(-1)
 
-@socketio.on('initialize', namespace="/video")
+@socketio.on('initialize', namespace="/video_socket")
 def initialize():
     account = session.get('account')
     print("initialize..."+account)    
 
     
 
-@socketio.on('startRecording', namespace="/video")
+@socketio.on('startRecording', namespace="/video_socket")
 def startRecording():
     account = session.get('account')
     AccountMap[account]=RecordManager(account)
@@ -78,7 +78,7 @@ def startRecording():
 
 
 
-@socketio.on('camerablob', namespace="/video")
+@socketio.on('camerablob', namespace="/video_socket")
 def receiveCameraBlob(message):
     # print(type(message['blob']))
     account = session.get('account')
@@ -88,7 +88,7 @@ def receiveCameraBlob(message):
     # manager.cameraSemaphore.release()
 
 
-@socketio.on('camerablobend', namespace="/video")
+@socketio.on('camerablobend', namespace="/video_socket")
 def receiveCameraBlobEnd():
     
     account = session.get('account')
@@ -103,7 +103,7 @@ def receiveCameraBlobEnd():
 
 
 
-@socketio.on('screenblob', namespace="/video")
+@socketio.on('screenblob', namespace="/video_socket")
 def receiveScreenBlob(message):
     account = session.get('account')
     manager=AccountMap[account]
@@ -113,7 +113,7 @@ def receiveScreenBlob(message):
 
 
 
-@socketio.on('screenblobend', namespace="/video")
+@socketio.on('screenblobend', namespace="/video_socket")
 def receiveScreenBlobEnd():
     account = session.get('account')
     manager=AccountMap[account]
@@ -130,7 +130,7 @@ def receiveScreenBlobEnd():
 
 
 
-@socketio.on('endRecording', namespace="/video")
+@socketio.on('endRecording', namespace="/video_socket")
 def endRecording():
     account = session.get('account')
     print("end recording",account)

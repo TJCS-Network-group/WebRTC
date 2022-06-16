@@ -29,7 +29,7 @@
   
 
 
-  var websocket_url = 'ws://' + document.domain + ':' + location.port + '/video';
+  var websocket_url = 'wss://' + document.domain + ':' + location.port + '/video_socket';
   var socket = io.connect(websocket_url);
   var cameraVideo = document.getElementById('camera');
   var screenVideo = document.getElementById('screen');
