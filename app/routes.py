@@ -6,7 +6,6 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 from user.models import Student  #模型
 from werkzeug.security import generate_password_hash
-
 from flask_login import LoginManager
 
 login_manager = LoginManager(app)
@@ -27,6 +26,7 @@ def before_request():
         database.connect()
 
 
+
 @app.teardown_request
 def teardown_request(exc):  #exc必须写上
     if not database.is_closed():
@@ -38,7 +38,7 @@ def rootindex():
     # 判断当前用户是否验证，如果通过的话直接进入录屏页
     if current_user.is_authenticated:
         return redirect(url_for('video'))
-    return redirect(url_for('login')) 
+    return redirect(url_for('login'))
 
 
 @app.route('/logout')

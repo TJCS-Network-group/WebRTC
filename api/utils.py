@@ -36,7 +36,7 @@ def make_response_json(statusCode: int = 200,
 
     Returns:
         flask json response
-    
+
     ### json¸ñÊ½
     #### { success: boolean, statusCode: int, message: string, data: object }
     ### statusCode:
@@ -69,3 +69,16 @@ def make_response_json(statusCode: int = 200,
             'message': message,
             'data': data
         }))
+
+import re
+def check_password_pattern(password:str) -> bool:
+    num = re.compile("[0-9]")
+    small_letter = re.compile("[a-z]")
+    big_letter = re.compile("[A-Z]")
+    special = re.compile("[+\-\*_&%]")
+    # s = [reps.findall(password) for reps in [num,small_letter,big_letter,special]]
+    result = [len(reps.findall(password)) for reps in [num,small_letter,big_letter,special]]
+    # print(s,result)
+    if 0 in result or sum(result) != len(password):
+        return False
+    return True
