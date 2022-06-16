@@ -90,6 +90,8 @@ def video():
 def video_websocket():
     if not current_user.is_authenticated:
         return render_template('404.html', error_code=401, error_text="ÇëÏÈµÇÂ¼")
+    if current_user.stu_userlevel == User_level.Admin.value:
+        return redirect('admin')
     return render_template('video_websocket.html')
 
 
