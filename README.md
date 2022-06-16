@@ -7,3 +7,9 @@
 ```
 git update-index --assume-unchanged main.py
 ```
+
+如果需要恢复对文件的版本控制，执行以下操作
+
+```
+git update-index --no-assume-unchanged main.py
+```
