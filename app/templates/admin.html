@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="ch_CN">
-    <head>
-        <meta charset="utf-8" />
-        <title>WebRTC-Monitor</title>
-        <meta http-equiv="x-ua-compatible" content="ie=edge" />  
-        <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
-    </head>
-    <body>
-        <main>
-            <section class="error-area pt-100 pb-100">
-                <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-lg-6 col-md-10">
-                            <div class="error-content text-center">
-                                <table id="stu_table"> 
+
+<head>
+    <meta charset="utf-8" />
+    <title>WebRTC-Monitor</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+</head>
+
+<body>
+    <main>
+        <section class="error-area pt-100 pb-100">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6 col-md-10">
+                        <div class="error-content text-center">
+                            <table id="stu_table">
                                 <thead>
                                     <tr>
                                         <th>学生学号</th>
@@ -22,29 +25,29 @@
                                         <th>监控地址</th>
                                     </tr>
                                 </thead>
-                            <tbody id="stu_tbody"></tbody>
+                                <tbody id="stu_tbody"></tbody>
                             </table>
-                            </div>
                         </div>
                     </div>
                 </div>
-            </section>
-        </main>
-        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script>
-            $(document).ready(function () {
-                $.ajax({
-                    url: '/api/get_all_user_info',
-                    type: "get",
-                    async: false,
-                    data: {},
-                    success: function (ret) {
-                        console.log(ret);
-                        if (ret.statusCode == 200) {
-                            let tbody=$("#stu_tbody");
-                            for(let i =0;i<ret.data.student_info.length;i++){
-                                let student=ret.data.student_info[i];
-                                let user_info_str = `<tr id=tr_${student.stu_no}>
+            </div>
+        </section>
+    </main>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: '/api/get_all_user_info',
+                type: "get",
+                async: false,
+                data: {},
+                success: function (ret) {
+                    console.log(ret);
+                    if (ret.statusCode == 200) {
+                        let tbody = $("#stu_tbody");
+                        for (let i = 0; i < ret.data.student_info.length; i++) {
+                            let student = ret.data.student_info[i];
+                            let user_info_str = `<tr id=tr_${student.stu_no}>
                                     <td class="" id="no_${student.stu_no}">
                                         ${student.stu_no}
                                     </td>
@@ -58,15 +61,16 @@
                                         <a href="/admin_video/${student.stu_no}">查看监控</a>
                                     </td>
                                 </tr>`;
-                                tbody.append(user_info_str);
-                            }
-                        } else {
-                            alert(ret.message);
+                            tbody.append(user_info_str);
                         }
-                    },
-                });
-
+                    } else {
+                        alert(ret.message);
+                    }
+                },
             });
-        </script>
-    </body>
+
+        });
+    </script>
+</body>
+
 </html>

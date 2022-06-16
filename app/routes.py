@@ -74,13 +74,15 @@ def admin_video(stu_no):
         return render_template('404.html', error_code=401, error_text='请先登录')
     elif current_user.stu_userlevel != User_level.Admin.value:
         return render_template('404.html', error_code=401, error_text="您不是管理员")
-    return render_template('admin_video.html',stu_no=stu_no)
+    return render_template('admin_video.html', stu_no=stu_no)
 
 
 @app.route('/video', methods=['GET'])
 def video():
     if not current_user.is_authenticated:
         return render_template('404.html', error_code=401, error_text="请先登录")
+    if current_user.stu_userlevel == User_level.Admin.value:
+        return redirect('admin')
     return render_template('video.html')
 
 

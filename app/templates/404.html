@@ -1,35 +1,38 @@
 <!DOCTYPE html>
 <html lang="ch_CN">
-    <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="x-ua-compatible" content="ie=edge" />    
-        <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
-    </head>
-    <body>
-        <main>
-            <section class="error-area pt-100 pb-100">
-                <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-lg-6 col-md-10">
-                            <div class="error-content text-center">
-                                <div class="error_txt" id="error_code">404</div>
-                                <p id="error_text">404 Not Found.</p>
-                                <a href="{{url_for('login')}}">返回登录页面</a>
-                            </div>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+</head>
+
+<body>
+    <main>
+        <section class="error-area pt-100 pb-100">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6 col-md-10">
+                        <div class="error-content text-center">
+                            <div class="error_txt" id="error_code">404</div>
+                            <p id="error_text">404 Not Found.</p>
+                            <a href="{{url_for('login')}}">返回登录页面</a>
                         </div>
                     </div>
                 </div>
-            </section>
-        </main>
-        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script>
-            $(document).ready(function () {
-                error_code = "{{error_code}}";
-                error_text = "{{error_text}}";
-                
-                if (error_text != "") $("#error_text").text(error_text);
-                if (error_code != "") $("#error_code").text(error_code);
-            });
-        </script>
-    </body>
+            </div>
+        </section>
+    </main>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            error_code = "{{error_code}}";
+            error_text = "{{error_text}}";
+            if (error_text != "") $("#error_text").text(error_text);
+            if (error_code != "") $("#error_code").text(error_code);
+        });
+    </script>
+</body>
+
 </html>
