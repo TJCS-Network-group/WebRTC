@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash
 from flask import request
 
 def check_and_login(stu_no, password=None):
-    need=[Student.id,Student.stu_grade,Student.stu_password,Student.stu_enable]
+    need=[Student.id,Student.stu_grade,Student.stu_password,Student.stu_enable,Student.stu_userlevel]
     users = Student.select(*need).where(Student.stu_no == stu_no)
     if users.count()==0:#没找到
         return make_response_json(400, "账号不存在")
