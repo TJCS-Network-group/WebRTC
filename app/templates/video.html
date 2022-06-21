@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ch_CN">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8" http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"/>
     <title>WebRTC-Meeting</title>
     <style>
         canvas {
@@ -24,19 +24,22 @@
     <input type="text" id="name">
     <button id="startbutton">开始录制</button>
     <button id="stopbutton">停止录制</button>
+    <button id="peerbutton">peer</button>
     <!-- <script src="/node_modules/socket.io/client-dist/socket.io.js"></script> -->
     <script src="https://cdn.socket.io/3.1.2/socket.io.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </body>
 <script>
-    // var websocket_url = 'ws://' + document.domain + ':' + location.port + '/video';
-    // var socket = io.connect(websocket_url);
+    //var websocket_url = 'https://' + document.domain+'/';
+    //var socket = io.connect(websocket_url);
+    var socket = io();
     var cameraVideo = document.getElementById('camera');
     var screenVideo = document.getElementById('screen');
     // var cameraCanvas = document.getElementById('camera-canvas');
     // var screenCanvas = document.getElementById('screen-canvas');
     var startButton = document.getElementById('startbutton');
     var stopButton = document.getElementById('stopbutton');
+    var peerButton = document.getElementById('peerbutton');
     var cameraStreaming = false;
     var screenStreaming = false;
 
@@ -83,8 +86,8 @@
     let screenOption = {
         audio: true,
         video: {
-            width: 720,
-            height: 480,
+            width: 1920,
+            height: 1080,
             frameRate: {
                 ideal: FRAME_RATE,
                 max: FRAME_RATE,
@@ -130,6 +133,8 @@
 
     console.log(getCookie("account"))
     getConfig();
+
+
     $.get("/api/video/initialize", {}, function (ret) {
         if (ret.statusCode != 200) {
             alert(ret.message);
@@ -138,6 +143,25 @@
         }
     });
 
+    socket.on('connect', ()=>{
+        account=getCookie("account");
+        console.log("open",account);
+        //socket.emit("message",{'account':account});
+    });
+    socket.on('message',(data)=>{
+        console.log("message",data);
+        switch(data['type']){
+            case 'answer':
+                getAnswer(data['answer']);
+            case 'ice':
+                setTimeout(()=>{
+                    getIce(data['ice']);
+                },500);
+        }
+    })
+
+
+    
 
 
     function sendBlob(type, blob) {
@@ -217,11 +241,6 @@
             cameraVideo.srcObject = stream;
             cameraVideo.muted = true;
             cameraVideo.play();
-            // cameraVideo.setAttribute('width', CameraWidth);
-            // cameraVideo.setAttribute('height', CameraHeight);
-            // cameraCanvas.setAttribute('width', CameraWidth);
-            // cameraCanvas.setAttribute('height', CameraHeight);
-            // playCanvas(cameraVideo, cameraCanvas.getContext('2d'), CameraWidth, CameraHeight)
         })
         .catch(function (err) {
             console.log("An error occured! " + err);
@@ -303,7 +322,6 @@
         // screenRecorder = new RecordRTC(screenStream, screenRecorderOption);
         // cameraRecorder.startRecording();
         // screenRecorder.startRecording();
-
     })
 
 
@@ -324,16 +342,89 @@
 
     })
 
-    function socketOpen() {
-        console.log("open");
-        // socket.emit("initialize")
 
-    }
 
-    function socketClose(reason) {
+    const iceServers = {
+        iceServers: [
+          { urls: 'stun:stun.l.google.com:19302' },
+          { urls: 'stun:stun1.l.google.com:19302' },
+          { urls: 'stun:stun2.l.google.com:19302' },
+          { urls: 'stun:stun3.l.google.com:19302' },
+          { urls: 'stun:stun4.l.google.com:19302' },
+          { urls: 'turn:121.37.159.103:3478',username: "network",credential: "network123",}
+        ],
+      }
 
-        console.log("close: ", reason);
-    }
+      let stu_no = "9999999";
+
+    peerButton.addEventListener('click', function (ev) {
+        peer = new RTCPeerConnection(iceServers);
+        console.log(peer)
+        for (const track of screenStream.getTracks()) {
+            peer.addTrack(track, screenStream);
+        }
+        //peer.onaddstream=getTrack)
+        peer.addEventListener('track', getTrack)
+        peer.addEventListener('icecandidate', sendIce)
+        peer.addEventListener('negotiationneeded', sendOffer)
+        peer.addEventListener('connectionstatechange', stateChange)
+
+    })
+    
+
+
+    function getTrack(event) {
+        remoteStream = event.streams[0]
+        video.srcObject = remoteStream;
+        video.muted = false;
+        video.play();
+      }
+
+      function stateChange(event) {
+        console.log("state change", peer.connectionState);
+        if (peer.connectionState == 'connected') {
+          // for (const track of localStream.getTracks()) {
+          //   peer.addTrack(track);
+          // }
+          console.log('connected')
+        }
+      
+      }
+
+      function sendOffer() {
+        console.log("send offer")
+        peer.createOffer().then((offer) => {
+          console.log(offer);
+          return peer.setLocalDescription(new RTCSessionDescription(offer));
+        })
+          .then(() => {
+            socket.emit('message', {"type":"offer","to":stu_no,"offer":peer.localDescription});
+          })
+      }
+
+      function getAnswer(obj) {
+        if (!obj) return;
+        console.log("Get answer: ", obj);
+        peer.setRemoteDescription(obj);
+      
+      
+      }
+
+      function sendIce(ice) {
+        console.log("Send ice:", ice.candidate);
+        if (!ice) return
+        socket.emit('message', {"type":"ice","to":stu_no,"ice":ice.candidate});
+      }
+
+      function getIce(obj) {
+        if (!obj) return;
+        console.log("Get ice: ", obj);
+        var candidate = new RTCIceCandidate(obj);
+        peer.addIceCandidate(candidate);
+      
+      }
+
+
 
 </script>
 

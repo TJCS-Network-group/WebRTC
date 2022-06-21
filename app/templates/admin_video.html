@@ -17,17 +17,151 @@
         <a href="{{url_for('admin')}}">返回主控室</a>
         <a href="{{url_for('logout')}}">登出</a>
         <h4 id="student_no"></h4>
+        <video id="camera"></video>
+        <video id="screen"></video>
+        
     </div>
     <script src="https://cdn.socket.io/3.1.2/socket.io.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </body>
 <script>
+
+    var cameraVideo = document.getElementById('camera');
+    var screenVideo = document.getElementById('screen');
+    let stu_no;
     $(document).ready(function () {
         let tep_list = location.href.split("/");
-        let stu_no = parseInt(tep_list[tep_list.length - 1]);
+        stu_no = tep_list[tep_list.length - 1];
         console.log(typeof stu_no);
         $("#student_no").text("待监控学生学号：" + stu_no.toString());
     });
+
+    const iceServers = {
+        iceServers: [
+          { urls: 'stun:stun.l.google.com:19302' },
+          { urls: 'stun:stun1.l.google.com:19302' },
+          { urls: 'stun:stun2.l.google.com:19302' },
+          { urls: 'stun:stun3.l.google.com:19302' },
+          { urls: 'stun:stun4.l.google.com:19302' },
+          { urls: 'turn:121.37.159.103:3478',username: "network",credential: "network123",}
+        ],
+      }
+    let socket = io();
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i].trim();
+            if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+        }
+        return "";
+    }
+
+    socket.on('connect', ()=>{
+        account=getCookie("account");
+        console.log("open",account);
+        //socket.emit("message",{'account':account});
+    });
+    socket.on('message',(data)=>{
+        console.log("message",data);
+        switch(data['type']){
+            case 'offer':
+                getOffer(data['offer']);
+            case 'ice':
+                setTimeout(()=>{
+                    getIce(data['ice']);
+                },500);
+                
+        }
+
+    })
+
+    let remoteStream;
+    function getTrack(event) {
+        remoteStream = event.streams[0]
+        screenVideo.srcObject = remoteStream;
+        screenVideo.muted = false;
+        screenVideo.play();
+      }
+
+      function stateChange(event) {
+        console.log("state change", peer.connectionState);
+        if (peer.connectionState == 'connected') {
+          // for (const track of localStream.getTracks()) {
+          //   peer.addTrack(track);
+          // }
+          console.log('connected')
+        }
+      
+      }
+
+      function getIce(obj) {
+        if (!obj) return;
+        console.log("Get ice: ", obj);
+        var candidate = new RTCIceCandidate(obj);
+        peer.addIceCandidate(candidate);
+      
+      }
+      
+      function getOffer(offer) {
+        console.log("Get offer: ", offer);
+        peer = new RTCPeerConnection(iceServers);
+      
+        peer.addEventListener('track', getTrack)
+        peer.addEventListener('icecandidate', sendIce)
+        peer.addEventListener('negotiationneeded', sendOffer)
+        peer.setRemoteDescription(new RTCSessionDescription(offer))
+        sendAnswer();
+      
+      }
+
+      function sendOffer() {
+        console.log("send offer")
+        peer.createOffer().then((offer) => {
+          console.log(offer);
+          return peer.setLocalDescription(new RTCSessionDescription(offer));
+        })
+          .then(() => {
+            socket.emit('message', {"type":"offer","to":stu_no,"description":peer.localDescription});
+          })
+      }
+
+      function getAnswer(obj) {
+        if (!obj) return;
+        console.log("Get answer: ", obj);
+        peer.setRemoteDescription(obj);
+
+      
+      }
+
+      function sendAnswer() {
+        peer.createAnswer().then((answer) => {
+          console.log("send answer")
+          console.log(answer);
+          return peer.setLocalDescription(new RTCSessionDescription(answer));
+        })
+          .then(() => {
+            socket.emit('message', {"type":"answer","to":stu_no,"answer":peer.localDescription});
+          })
+      }
+
+      function sendIce(ice) {
+        console.log("Send ice:", ice.candidate);
+        if (!ice) return
+        socket.emit('message', {"type":"ice","to":stu_no,"ice":ice.candidate});
+      }
+
+      function getIce(obj) {
+        if (!obj) return;
+        console.log("Get ice: ", obj);
+        var candidate = new RTCIceCandidate(obj);
+        peer.addIceCandidate(candidate);
+      
+      }
+
+
+
 </script>
 
 </html>

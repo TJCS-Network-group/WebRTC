@@ -9,6 +9,6 @@ api_blue = Blueprint('api',
                      static_folder='static')
 
 from . import login_routes
-from . import videoapi
+from . import video_routes
 from . import config_routes
 from . import admin_routes

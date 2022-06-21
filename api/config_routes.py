@@ -4,7 +4,6 @@ from api.utils import *
 from api import api_blue
 import configparser
 
-
 def get_config(path: str) -> dict:
     """获取用户配置文件中的配置
 
@@ -48,20 +47,34 @@ def _get_config():
     """
     #if not current_user.is_authenticated:
     #    return make_response_json(401, "当前用户未登录")
-    data = dict(request.args)
-    try:
-        id = int(data["id"])
-    except:
-        return make_response_json(400, "请求格式不对")
-    try:
-        user = Student.get(Student.id == id)
-    except:
-        return make_response_json(404, "用户不存在")
+    # data = dict(request.args)
+    # try:
+    #     id = int(data["id"])
+    # except:
+    #     return make_response_json(400, "请求格式不对")
+    # try:
+    #     user = Student.get(Student.id == id)
+    # except:
+    #     return make_response_json(404, "用户不存在")
+    # target_path = f"./etc/webrtc-{id}.conf"  #配置文件存在哪里，这个之后可以改
+    # if not os.path.exists(target_path):
+    #     return make_response_json(404,"未找到该用户的配置文件")
+    # try:
+    #     data = get_config(target_path)
+    # except Exception as e:
+    #     return make_response_json(500, "程序发生错误："+repr(e))
+    # return make_response_json(data=data)
+    if request.args.get('id') is None:
+        id = current_user.id
+    else:
+        id = request.args.get('id')
     target_path = f"./etc/webrtc-{id}.conf"  #配置文件存在哪里，这个之后可以改
     if not os.path.exists(target_path):
-        return make_response_json(404,"未找到该用户的配置文件")
-    try:
-        data = get_config(target_path)
-    except Exception as e:
-        return make_response_json(500, "程序发生错误："+repr(e))
+        data = get_config(f"./etc/webrtc-default.conf")
+        # return make_response_json(404,"未找到该用户的配置文件")
+    else:
+        try:
+            data = get_config(target_path)
+        except Exception as e:
+            return make_response_json(500, "程序发生错误："+repr(e))
     return make_response_json(data=data)

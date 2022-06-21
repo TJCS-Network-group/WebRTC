@@ -3,7 +3,7 @@
 
 from flask import Blueprint
 
-video_blue = Blueprint('videosocket',
+websocket_blue = Blueprint('websocket',
                        __name__,
                        template_folder="templates",
                        static_folder='static')
