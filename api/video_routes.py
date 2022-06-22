@@ -14,98 +14,114 @@ def get_stu_name(stu_no):
     return students[0].stu_name
 
 
-def process_video(stu_no):
+# def process_video(stu_no):
     
-    time.sleep(10)
-    print("process video")
-    global RECORD_DIR
-    DIR = RECORD_DIR + "u" + str(stu_no) + "/"
-    filenames = None
-    for root, dirs, files in os.walk(DIR):
-        filenames = [x for x in files if not 'processed_' in x]
-        break
+#     time.sleep(10)
+#     print("process video")
+#     global RECORD_DIR
+#     DIR = RECORD_DIR + "u" + str(stu_no) + "/"
+#     filenames = None
+#     for root, dirs, files in os.walk(DIR):
+#         filenames = [x for x in files if not 'processed_' in x]
+#         break
     
-    cameraVideos = [x for x in filenames if 'origin-video-' in x]
-    screenVideos = [x for x in filenames if 'origin-screen-' in x]
-    if len(cameraVideos)==0 or len(screenVideos)==0:
-        return
-    cameraVideos.sort()
-    screenVideos.sort()
-    cameraOutput = cameraVideos[0][7:]
-    screenOutput = screenVideos[0][7:]
-    # print(cameraOutput)
-    # print(screenOutput)
-    for file in cameraVideos:
-        command = "ffmpeg -loglevel quiet -y -i " + DIR + file + " -vcodec copy -acodec copy " + DIR + "processed_" + file
-        # print(command)
-        os.system(command)
-    for file in screenVideos:
-        command = "ffmpeg -loglevel quiet -y -i " + DIR + file + " -vcodec copy -acodec copy " + DIR + "processed_" + file
-        # print(command)
-        os.system(command)
-    cameraVideos = [
-        "processed_" + x for x in filenames if 'origin-video-' in x
-    ]
-    screenVideos = [
-        "processed_" + x for x in filenames if 'origin-screen-' in x
-    ]
-    with open(DIR + "cameralist.txt", 'w') as outfile:
-        for filename in cameraVideos:
-            outfile.write("file \'" + filename + "\'\n")
+#     cameraVideos = [x for x in filenames if 'origin-video-' in x]
+#     screenVideos = [x for x in filenames if 'origin-screen-' in x]
+#     if len(screenVideos)==0:
+#         return
+#     if len(cameraVideos)!=0:
+#         cameraVideos.sort()
+#         cameraOutput = cameraVideos[0][7:]
+#         for file in cameraVideos:
+#             command = "ffmpeg -loglevel quiet -y -i " + DIR + file + " -vcodec copy -acodec copy " + DIR + "processed_" + file
+#             os.system(command)
+#         cameraVideos = [
+#             "processed_" + x for x in filenames if 'origin-video-' in x
+#         ]
+        
+#         with open(DIR + "cameralist.txt", 'w') as outfile:
+#             for filename in cameraVideos:
+#                 outfile.write("file \'" + filename + "\'\n")
+#         command = "cd " + DIR + " && ffmpeg -loglevel quiet -y -f concat -i cameralist.txt -c copy " + cameraOutput
+#         os.system(command)
+    
+#         finalCameraOutput = "u" + str(stu_no) + "-" + get_stu_name(
+#         stu_no) + "-" + cameraOutput
+        
+#         os.rename((DIR + cameraOutput).encode('gbk'),
+#               (DIR + finalCameraOutput).encode('gbk'))
+        
+#         os.remove(DIR + "cameralist.txt")
+        
+#     screenVideos.sort()    
+#     screenOutput = screenVideos[0][7:]
+    
+#     for file in screenVideos:
+#         command = "ffmpeg -loglevel quiet -y -i " + DIR + file + " -vcodec copy -acodec copy " + DIR + "processed_" + file
+#         os.system(command)
+    
+#     screenVideos = [
+#         "processed_" + x for x in filenames if 'origin-screen-' in x
+#     ]    
 
-    with open(DIR + "screenlist.txt", 'w') as outfile:
-        for filename in screenVideos:
-            outfile.write("file \'" + filename + "\'\n")
-    command = "cd " + DIR + " && ffmpeg -loglevel quiet -y -f concat -i cameralist.txt -c copy " + cameraOutput
-    # print(command)
-    os.system(command)
-    command = "cd " + DIR + " && ffmpeg -loglevel quiet -y -f concat -i screenlist.txt -c copy " + screenOutput
-    # print(command)
-    os.system(command)
-    for root, dirs, files in os.walk(DIR):
-        filenames = [x for x in files if not 'processed_' in x]
-        print(filenames)
-        break
+
+#     with open(DIR + "screenlist.txt", 'w') as outfile:
+#         for filename in screenVideos:
+#             outfile.write("file \'" + filename + "\'\n")
     
-    finalCameraOutput = "u" + str(stu_no) + "-" + get_stu_name(
-        stu_no) + "-" + cameraOutput
-    # print("rename",(DIR + cameraOutput).encode('gbk'),
-    #           (DIR + finalCameraOutput).encode('gbk'))
-    os.rename((DIR + cameraOutput).encode('gbk'),
-              (DIR + finalCameraOutput).encode('gbk'))
-    finalScreenOutput = "u" + str(stu_no) + "-" + get_stu_name(
-        stu_no) + "-" + screenOutput
-    # print("rename",(DIR + screenOutput).encode('gbk'),
-    #           (DIR + finalScreenOutput).encode('gbk'))
-    os.rename((DIR + screenOutput).encode('gbk'),
-              (DIR + finalScreenOutput).encode('gbk'))
+#     command = "cd " + DIR + " && ffmpeg -loglevel quiet -y -f concat -i screenlist.txt -c copy " + screenOutput
+#     os.system(command)
     
-    for root, dirs, files in os.walk(DIR):
-        removefiles = [x for x in files if 'origin-' in x]
-        break
-    for file in removefiles:
-        os.remove(DIR + file)
-    os.remove(DIR + "cameralist.txt")
-    os.remove(DIR + "screenlist.txt")
-    # print(cameraVideos)
-    # print(finalCameraFname)
+#     finalScreenOutput = "u" + str(stu_no) + "-" + get_stu_name(
+#         stu_no) + "-" + screenOutput
+#     os.rename((DIR + screenOutput).encode('gbk'),
+#               (DIR + finalScreenOutput).encode('gbk'))
+    
+#     for root, dirs, files in os.walk(DIR):
+#         removefiles = [x for x in files if 'origin-' in x]
+#         break
+#     for file in removefiles:
+#         os.remove(DIR + file)
+#     os.remove(DIR + "screenlist.txt")
+#     # print(cameraVideos)
+#     # print(finalCameraFname)
+
+def process_video(stu_no,path):
+    
+    # time.sleep(10)
+    print("process video")
+    print(path)
+    first_index=path.index('origin')
+    DIR = path[0:first_index]
+    filename = path[first_index:]
+    finalName = 'u'+str(stu_no)+ "-" + get_stu_name(stu_no) +filename[6:]
+    print(DIR)
+    print(filename)
+    print(finalName)
+    command = "ffmpeg -loglevel quiet -y -i " + DIR + filename + " -vcodec copy -acodec copy " + DIR + "processed_" + filename
+    print(command)
+    os.system(command)
+    os.rename((DIR + "processed_" + filename).encode('gbk'),
+              (DIR + finalName).encode('gbk'))
+    
+
+# process_video('1950638','/home/webrtc/video/u1950638/origin-screen-2022-06-23-00-45-31.webm')
 
 
 class RecordManager:
 
-    def __init__(self, account):
+    def __init__(self, account,camera):
         mkdir(RECORD_DIR + "u" + str(account))
-        self.cameraBuffer = bytes()
-        self.screenBuffer = bytes()
-        self.cameraOutputPath = RECORD_DIR + "u" + str(
-            account) + "/origin-video-" + datetime.now().strftime(
-                "%Y-%m-%d-%H-%M-%S") + ".webm"
+        if camera == 'true':
+            self.cameraOutputPath = RECORD_DIR + "u" + str(
+                account) + "/origin-video-" + datetime.now().strftime(
+                    "%Y-%m-%d-%H-%M-%S") + ".webm"
+            self.cameraOutput = open(self.cameraOutputPath, "wb")
+            self.cameraSemaphore = BoundedSemaphore(1)
         self.screenOutputPath = RECORD_DIR + "u" + str(
             account) + "/origin-screen-" + datetime.now().strftime(
-                "%Y-%m-%d-%H-%M-%S") + ".webm"
-        self.cameraOutput = open(self.cameraOutputPath, "wb")
-        self.screenOutput = open(self.screenOutputPath, "wb")
-        self.cameraSemaphore = BoundedSemaphore(1)
+                "%Y-%m-%d-%H-%M-%S") + ".webm"        
+        self.screenOutput = open(self.screenOutputPath, "wb")        
         self.screenSemaphore = BoundedSemaphore(1)
 
 
@@ -128,9 +144,15 @@ def video_initialize():
 
 @api_blue.route('/video/start_record', methods=['GET'])
 def start_record():
-
+    camera=request.args.get('camera')
+    print(camera,type(camera))
     account = session.get('account')
-    AccountMap[account] = RecordManager(account)
+    
+    if AccountMap.get(account) is not None:
+        newTread = threading.Thread(target=process_video,args=(session['account'],,))
+        newTread.start()
+    
+    AccountMap[account] = RecordManager(account,camera)
     print("start recording", account)
 
     # if(os.path.isfile(manager.cameraOutput)):
@@ -186,8 +208,11 @@ def end_record():
     account = session.get('account')
     print("end recording", account)
     manager = AccountMap[account]
-    manager.cameraOutput.close()
+    if hasattr(manager,'cameraOutput'):
+        manager.cameraOutput.close()
     manager.screenOutput.close()
+    AccountMap[account]
+    
     return make_response_json(data={"message": "success"})
 
     manager.cameraSemaphore.acquire()

@@ -16,10 +16,11 @@ from app import scheduler
 from api.video_routes import process_video
 
 recordtime = None
-MAX_SIZE_PER_BUFFER = 1*1024*1024
-RECORD_DIR = "webrtc_video/"
+# MAX_SIZE_PER_BUFFER = 1*1024*1024
+# RECORD_DIR = "webrtc_video/"
 
 OnlineTable = {}
+ProcessTable = {}
 
 inExam = False
 
@@ -108,9 +109,15 @@ def endExam():
     students=Student.select(*need).where(Student.stu_userlevel==User_level.Normal.value)
     for student in students:
         socketio.emit("endExam",to=student.stu_no)
-        newTread = threading.Thread(target=process_video,args=(student.stu_no,))
-        newTread.start()
+    #     newTread = threading.Thread(target=process_video,args=(student.stu_no,))
+    #     newTread.start()
 
+@cross_origin
+@socketio.on('processVideo')
+def processVideo():
+    stu_no = session['account']
+    newTread = threading.Thread(target=process_video,args=(stu_no,))
+    newTread.start()
 
 
 
