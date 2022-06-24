@@ -68,9 +68,10 @@ def _get_config():
         id = current_user.id
     else:
         id = request.args.get('id')
-    target_path = f"./etc/webrtc-{id}.conf"  #配置文件存在哪里，这个之后可以改
+    target_path = BASE_DIR+f"/etc/webrtc-{id}.conf"  #配置文件存在哪里，这个之后可以改
     if not os.path.exists(target_path):
-        data = get_config(f"./etc/webrtc-default.conf")
+        data = get_config(BASE_DIR+"./etc/webrtc-default.conf")
+        print(data)
         # return make_response_json(404,"未找到该用户的配置文件")
     else:
         try:

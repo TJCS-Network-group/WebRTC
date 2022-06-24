@@ -5,7 +5,7 @@ from api import api_blue
 from threading import BoundedSemaphore
 from api.config_routes import get_config
 
-config = get_config(f"./etc/webrtc-default.conf")
+config = get_config(BASE_DIR+"/etc/webrtc-default.conf")
 RECORD_DIR = config['root-dir']
 
 def get_stu_name(stu_no):
@@ -88,22 +88,22 @@ def get_stu_name(stu_no):
 
 def process_video(stu_no,path):
     
-    # time.sleep(10)
-    print("process video")
-    print(path)
+    time.sleep(5)
+    # print("process video",path)
+    # print(path)
     first_index=path.index('origin')
     DIR = path[0:first_index]
     filename = path[first_index:]
     finalName = 'u'+str(stu_no)+ "-" + get_stu_name(stu_no) +filename[6:]
-    print(DIR)
-    print(filename)
-    print(finalName)
+    # print(DIR)
+    # print(filename)
+    # print(finalName)
     command = "ffmpeg -loglevel quiet -y -i " + DIR + filename + " -vcodec copy -acodec copy " + DIR + "processed_" + filename
-    print(command)
+    # print(command)
     os.system(command)
     os.rename((DIR + "processed_" + filename).encode('gbk'),
               (DIR + finalName).encode('gbk'))
-    
+    os.remove(DIR + filename)
 
 # process_video('1950638','/home/webrtc/video/u1950638/origin-screen-2022-06-23-00-45-31.webm')
 
@@ -117,12 +117,10 @@ class RecordManager:
                 account) + "/origin-video-" + datetime.now().strftime(
                     "%Y-%m-%d-%H-%M-%S") + ".webm"
             self.cameraOutput = open(self.cameraOutputPath, "wb")
-            self.cameraSemaphore = BoundedSemaphore(1)
         self.screenOutputPath = RECORD_DIR + "u" + str(
             account) + "/origin-screen-" + datetime.now().strftime(
                 "%Y-%m-%d-%H-%M-%S") + ".webm"        
-        self.screenOutput = open(self.screenOutputPath, "wb")        
-        self.screenSemaphore = BoundedSemaphore(1)
+        self.screenOutput = open(self.screenOutputPath, "wb")  
 
 
 AccountMap = {}
@@ -134,12 +132,12 @@ def mkdir(path):
         os.makedirs(path)
 
 
-@api_blue.route('/video/initialize', methods=['GET'])
-def video_initialize():
-    account = session.get('account')
-    print("initialize..." + account)
+# @api_blue.route('/video/initialize', methods=['GET'])
+# def video_initialize():
+#     account = session.get('account')
+#     print("initialize..." + account)
 
-    return make_response_json(data={"message": "success"})
+#     return make_response_json(data={"message": "success"})
 
 
 @api_blue.route('/video/start_record', methods=['GET'])
@@ -149,23 +147,21 @@ def start_record():
     account = session.get('account')
     
     if AccountMap.get(account) is not None:
-        newTread = threading.Thread(target=process_video,args=(session['account'],,))
+        manager=AccountMap[account]
+        if hasattr(manager,'cameraOutput'):
+            if not manager.cameraOutput.closed:
+                manager.cameraOutput.close()
+            newTread = threading.Thread(target=process_video,args=(session['account'],manager.cameraOutputPath,))
+            newTread.start()
+        
+        if not manager.screenOutput.closed:
+            manager.screenOutput.close()
+        newTread = threading.Thread(target=process_video,args=(session['account'],manager.screenOutputPath,))
         newTread.start()
+        AccountMap[account] = None
     
     AccountMap[account] = RecordManager(account,camera)
     print("start recording", account)
-
-    # if(os.path.isfile(manager.cameraOutput)):
-    #     os.remove(manager.cameraOutput)
-    # if(os.path.isfile(manager.screenOutput)):
-    #     os.remove(manager.screenOutput)
-
-    # manager.cameraSemaphore.acquire()
-    # manager.screenSemaphore.acquire()
-    # manager.cameraBuffer = bytes()
-    # manager.screenBuffer = bytes()
-    # manager.cameraSemaphore.release()
-    # manager.screenSemaphore.release()
 
     return make_response_json(data={"message": "success"})
 
@@ -180,11 +176,7 @@ def post_camerablob():
     file.save(manager.cameraOutput)
     return make_response_json(data={"message": "success"})
 
-    account = session.get('account')
-    manager = AccountMap[account]
-    manager.cameraSemaphore.acquire()
-    manager.cameraBuffer = manager.cameraBuffer
-    manager.cameraSemaphore.release()
+
 
 
 @api_blue.route('/video/post_screenblob', methods=['POST'])
@@ -196,11 +188,7 @@ def post_screenblob():
     file.save(manager.screenOutput)
     return make_response_json(data={"message": "success"})
 
-    account = session.get('account')
-    manager = AccountMap[account]
-    manager.screenSemaphore.acquire()
-    manager.screenBuffer = manager.screenBuffer
-    manager.screenSemaphore.release()
+
 
 
 @api_blue.route('/video/end_record', methods=['GET'])
@@ -209,17 +197,16 @@ def end_record():
     print("end recording", account)
     manager = AccountMap[account]
     if hasattr(manager,'cameraOutput'):
-        manager.cameraOutput.close()
-    manager.screenOutput.close()
-    AccountMap[account]
+        if not manager.cameraOutput.closed:
+            manager.cameraOutput.close()
+        newTread = threading.Thread(target=process_video,args=(session['account'],manager.cameraOutputPath,))
+        newTread.start()
+        
+    if not manager.screenOutput.closed:
+        manager.screenOutput.close()
+    newTread = threading.Thread(target=process_video,args=(session['account'],manager.screenOutputPath,))
+    newTread.start()
+    AccountMap[account] = None
     
     return make_response_json(data={"message": "success"})
 
-    manager.cameraSemaphore.acquire()
-    manager.screenSemaphore.acquire()
-    with open(manager.cameraOutput, 'ab') as output:
-        output.write(manager.cameraBuffer)
-    with open(manager.screenOutput, 'ab') as output:
-        output.write(manager.screenBuffer)
-    manager.cameraSemaphore.release()
-    manager.screenSemaphore.release()

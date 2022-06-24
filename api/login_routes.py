@@ -68,14 +68,19 @@ def logout():
 
 @api_blue.route("/myinfo",methods=["GET"])
 def myinfo():
+    if not session.get('account'):
+        return make_response_json(400,"ÇëÏÈµÇÂ¼",data={"url":"/Login"})
     if not current_user.is_authenticated:
-        return make_response_json(400,"ÇëÏÈµÇÂ¼",data={"url":"Login"})
+        return make_response_json(400,"ÇëÏÈµÇÂ¼",data={"url":"/Login"})
     return make_response_json(200,"ĞÅÏ¢",data={"stu_no":current_user.stu_no,"stu_name":current_user.stu_name})
     
 
 @api_blue.route('/get_identity', methods=['GET'])
 def get_identity():
     retData={}
+    if not session.get('account'):
+        retData['isLogin']=False
+        return make_response_json(200,"",data=retData)
     if not current_user.is_authenticated:
         retData['isLogin']=False
         return make_response_json(200,"",data=retData)

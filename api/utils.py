@@ -22,6 +22,8 @@ import random
 import threading
 from datetime import datetime, timedelta
 
+BASE_DIR = "/root/Meeting/"
+
 
 def make_response_json(statusCode: int = 200,
                        message: str = "",

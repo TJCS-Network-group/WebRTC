@@ -35,14 +35,14 @@ def check_alive():
     students=Student.select(*need).where(Student.stu_userlevel==User_level.Normal.value)
     for student in students:
         if OnlineTable.get(student.stu_no) is None:
-            OnlineTable[student.stu_no] = 0
-        OnlineTable[student.stu_no] -= 1
-        if OnlineTable[student.stu_no]<0:
-            OnlineTable[student.stu_no]=0
+            OnlineTable[student.stu_no] = {'aliveCount':0,'onCamera':False,'onScreen':False, 'isRecording': False};
+        OnlineTable[student.stu_no]['aliveCount'] -= 1
+        if OnlineTable[student.stu_no]['aliveCount']<0:
+            OnlineTable[student.stu_no]['aliveCount']=0
         socketio.emit("checkAlive",to=student.stu_no)
     print('alive check executed')
-      
-      
+    
+    
       
 def get_online_table():
     return OnlineTable
@@ -58,7 +58,8 @@ def mkdir(path):
 @socketio.on('connect')
 def connect():
     print("connect.."+session['account'])
-    OnlineTable[session['account']] = 2
+    if OnlineTable.get(session['account']) is not None:
+        OnlineTable[session['account']]['aliveCount'] = 2
     join_room(session['account'])
 
 @cross_origin
@@ -78,11 +79,14 @@ def disconnect():
 
 @cross_origin
 @socketio.on('alive')
-def get_alive():
-    print("alive"+session['account'])
-    OnlineTable[session['account']] += 1
-    if OnlineTable[session['account']]>2:
-        OnlineTable[session['account']]=2
+def get_alive(data):
+    print("alive"+session['account'],data['onCamera'],data['onScreen'])
+    OnlineTable[session['account']]['aliveCount'] += 2
+    if OnlineTable[session['account']]['aliveCount']>2:
+        OnlineTable[session['account']]['aliveCount']=2
+    OnlineTable[session['account']]['onCamera']=data['onCamera']
+    OnlineTable[session['account']]['onScreen']=data['onScreen']
+    OnlineTable[session['account']]['isRecording']=data['isRecording']
 
 @cross_origin
 @socketio.on('getOnlineTable')
@@ -111,6 +115,16 @@ def endExam():
         socketio.emit("endExam",to=student.stu_no)
     #     newTread = threading.Thread(target=process_video,args=(student.stu_no,))
     #     newTread.start()
+
+@cross_origin
+@socketio.on('alertVideo')
+def alertVideo():
+    print('alertVideo')
+    need=[Student.id,Student.stu_no]
+    students=Student.select(*need).where(Student.stu_userlevel==User_level.Normal.value)
+    for student in students:
+        socketio.emit("alertVideo",to=student.stu_no)
+
 
 @cross_origin
 @socketio.on('processVideo')

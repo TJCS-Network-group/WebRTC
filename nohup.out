@@ -1,0 +1,249 @@
+ * Serving Flask app 'app' (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: on
+ * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://192.168.0.42:1234/ (Press CTRL+C to quit)
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 819-679-469
+ * Detected change in '/root/Meeting/api/video_routes.py', reloading
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+ * Restarting with stat
+Traceback (most recent call last):
+  File "/root/Meeting/main.py", line 4, in <module>
+    from app import app, socketio
+  File "/root/Meeting/app/__init__.py", line 66, in <module>
+    from api import api_blue
+  File "/root/Meeting/api/__init__.py", line 12, in <module>
+    from . import video_routes
+  File "/root/Meeting/api/video_routes.py", line 9, in <module>
+    RECORD_DIR = config['root-dir']
+KeyError: 'root-dir'
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+ * Serving Flask app 'app' (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: on
+ * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://192.168.0.42:1234/ (Press CTRL+C to quit)
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 819-679-469
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+ * Serving Flask app 'app' (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: on
+ * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://192.168.0.42:1234/ (Press CTRL+C to quit)
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 819-679-469
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+ * Serving Flask app 'app' (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: on
+ * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://192.168.0.42:1234/ (Press CTRL+C to quit)
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 819-679-469
+123.60.78.126 - - [24/Jun/2022 00:42:00] "[32mGET / HTTP/1.0[0m" 302 -
+123.60.78.126 - - [24/Jun/2022 00:42:00] "GET /video HTTP/1.0" 200 -
+123.60.78.126 - - [24/Jun/2022 00:42:02] "GET /socket.io/?EIO=4&transport=polling&t=O6HSJ35 HTTP/1.1" 200 -
+123.60.78.126 - - [24/Jun/2022 00:42:03] "GET /api/video/initialize HTTP/1.0" 200 -
+123.60.78.126 - - [24/Jun/2022 00:42:03] "POST /socket.io/?EIO=4&transport=polling&t=O6HSJKk&sid=VyKfy1XcHRSPUhU9AAAA HTTP/1.1" 200 -
+123.60.78.126 - - [24/Jun/2022 00:42:04] "GET /socket.io/?EIO=4&transport=polling&t=O6HSJKl&sid=VyKfy1XcHRSPUhU9AAAA HTTP/1.1" 200 -
+123.60.78.126 - - [24/Jun/2022 00:42:04] "GET /api/get_config?id=2 HTTP/1.0" 200 -
+123.60.78.126 - - [24/Jun/2022 00:42:04] "GET /favicon.ico HTTP/1.0" 200 -
+123.60.78.126 - - [24/Jun/2022 00:42:18] "[35m[1mGET /socket.io/?EIO=4&transport=websocket&sid=VyKfy1XcHRSPUhU9AAAA HTTP/1.1[0m" 500 -
+123.60.78.126 - - [24/Jun/2022 00:44:14] "GET /favicon.ico HTTP/1.0" 200 -
+123.60.78.126 - - [24/Jun/2022 00:44:17] "GET /favicon.ico HTTP/1.0" 200 -
+123.60.78.126 - - [24/Jun/2022 00:46:33] "GET /api/get_identity HTTP/1.0" 200 -
+123.60.78.126 - - [24/Jun/2022 00:46:52] "GET /api/get_identity HTTP/1.0" 200 -
+123.60.78.126 - - [24/Jun/2022 00:47:03] "GET /api/get_identity HTTP/1.0" 200 -
+123.60.78.126 - - [24/Jun/2022 00:47:19] "POST /api/login_using_password HTTP/1.0" 200 -
+123.60.78.126 - - [24/Jun/2022 00:47:26] "POST /api/login_using_password HTTP/1.0" 200 -
+123.60.78.126 - - [24/Jun/2022 00:47:26] "GET /api/get_identity HTTP/1.0" 200 -
+123.60.78.126 - - [24/Jun/2022 00:47:28] "GET /api/get_config HTTP/1.0" 200 -
+123.60.78.126 - - [24/Jun/2022 00:47:28] "GET /socket.io/?EIO=4&transport=polling&t=O6HTYZ5 HTTP/1.1" 200 -
+123.60.78.126 - - [24/Jun/2022 00:47:28] "GET /api/myinfo HTTP/1.0" 200 -
+123.60.78.126 - - [24/Jun/2022 00:47:28] "POST /socket.io/?EIO=4&transport=polling&t=O6HTYgD&sid=E69Sqwp7illOM0SzAAAC HTTP/1.1" 200 -
+123.60.78.126 - - [24/Jun/2022 00:47:29] "GET /socket.io/?EIO=4&transport=polling&t=O6HTYgE&sid=E69Sqwp7illOM0SzAAAC HTTP/1.1" 200 -
+123.60.78.126 - - [24/Jun/2022 00:47:29] "POST /socket.io/?EIO=4&transport=polling&t=O6HTYui&sid=E69Sqwp7illOM0SzAAAC HTTP/1.1" 200 -
+123.60.78.126 - - [24/Jun/2022 00:47:29] "GET /socket.io/?EIO=4&transport=polling&t=O6HTYui.0&sid=E69Sqwp7illOM0SzAAAC HTTP/1.1" 200 -
+123.60.78.126 - - [24/Jun/2022 00:47:30] "GET /socket.io/?EIO=4&transport=polling&t=O6HTYxG&sid=E69Sqwp7illOM0SzAAAC HTTP/1.1" 200 -
+123.60.78.126 - - [24/Jun/2022 00:47:38] "GET /api/video/start_record?camera=true HTTP/1.0" 200 -
+123.60.78.126 - - [24/Jun/2022 00:47:50] "POST /api/video/post_camerablob HTTP/1.0" 200 -
+123.60.78.126 - - [24/Jun/2022 00:47:56] "POST /api/video/post_screenblob HTTP/1.0" 200 -
+123.60.78.126 - - [24/Jun/2022 00:48:00] "POST /api/video/post_camerablob HTTP/1.0" 200 -
+123.60.78.126 - - [24/Jun/2022 00:48:01] "POST /api/video/post_camerablob HTTP/1.0" 200 -
+123.60.78.126 - - [24/Jun/2022 00:48:04] "POST /api/video/post_screenblob HTTP/1.0" 200 -
+123.60.78.126 - - [24/Jun/2022 00:48:05] "GET /api/video/end_record HTTP/1.0" 200 -
+123.60.78.126 - - [24/Jun/2022 00:48:07] "[35m[1mPOST /api/video/post_screenblob HTTP/1.0[0m" 500 -
+Traceback (most recent call last):
+  File "/usr/local/lib64/python3.6/site-packages/flask/app.py", line 2091, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/usr/local/lib64/python3.6/site-packages/flask_socketio/__init__.py", line 44, in __call__
+    start_response)
+  File "/usr/local/lib/python3.6/site-packages/engineio/middleware.py", line 74, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/usr/local/lib/python3.6/site-packages/werkzeug/middleware/proxy_fix.py", line 187, in __call__
+    return self.app(environ, start_response)
+  File "/usr/local/lib64/python3.6/site-packages/flask/app.py", line 2076, in wsgi_app
+    response = self.handle_exception(e)
+  File "/usr/local/lib64/python3.6/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib64/python3.6/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib64/python3.6/site-packages/flask/app.py", line 1518, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib64/python3.6/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib64/python3.6/site-packages/flask/app.py", line 1516, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib64/python3.6/site-packages/flask/app.py", line 1502, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/root/Meeting/api/video_routes.py", line 188, in post_screenblob
+    file.save(manager.screenOutput)
+AttributeError: 'NoneType' object has no attribute 'screenOutput'
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+connect..1950638
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+disconnect...1950638
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+0
+alive check executed
+connect..1950638
+alive check executed
+alive1950638 True True
+true <class 'str'>
+start recording 1950638
+alive check executed
+alive1950638 True True
+alive check executed
+alive1950638 True True
+end recording 1950638
+alive check executed
+alive1950638 True True
+alive check executed
+alive1950638 True True
+alive check executed
+alive1950638 True True
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed
+alive check executed

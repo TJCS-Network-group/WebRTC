@@ -33,66 +33,66 @@ def teardown_request(exc):  #exc必须写上
         database.close()
 
 
-@app.route("/")
-def rootindex():
-    # 判断当前用户是否验证，如果通过的话直接进入录屏页
-    if current_user.is_authenticated:
-        return redirect(url_for('video'))
-    return redirect(url_for('login'))
+# @app.route("/")
+# def rootindex():
+#     # 判断当前用户是否验证，如果通过的话直接进入录屏页
+#     if current_user.is_authenticated:
+#         return redirect(url_for('video'))
+#     return redirect(url_for('login'))
 
 
-@app.route('/logout')
-def logout():
-    #登出
-    logout_user()
-    return redirect(url_for('login'))
+# @app.route('/logout')
+# def logout():
+#     #登出
+#     logout_user()
+#     return redirect(url_for('login'))
 
 
-@app.route('/login', methods=['GET'])
-def login():
-    # 判断当前用户是否登录，如果已登录的话直接让它去对应的用户主页
-    if current_user.is_authenticated:
-        if current_user.stu_userlevel == User_level.Admin.value:
-            return redirect(url_for('admin'))
-        elif current_user.stu_userlevel == User_level.Normal.value:
-            return redirect(url_for('video'))
-    return render_template('password_login.html')
+# @app.route('/login', methods=['GET'])
+# def login():
+#     # 判断当前用户是否登录，如果已登录的话直接让它去对应的用户主页
+#     if current_user.is_authenticated:
+#         if current_user.stu_userlevel == User_level.Admin.value:
+#             return redirect(url_for('admin'))
+#         elif current_user.stu_userlevel == User_level.Normal.value:
+#             return redirect(url_for('video'))
+#     return render_template('password_login.html')
 
 
-@app.route('/admin', methods=['GET'])
-def admin():
-    if not current_user.is_authenticated:
-        return render_template('404.html', error_code=401, error_text="请先登录")
-    elif current_user.stu_userlevel != User_level.Admin.value:
-        return render_template('404.html', error_code=401, error_text="您不是管理员")
-    return render_template('admin.html')
+# @app.route('/admin', methods=['GET'])
+# def admin():
+#     if not current_user.is_authenticated:
+#         return render_template('404.html', error_code=401, error_text="请先登录")
+#     elif current_user.stu_userlevel != User_level.Admin.value:
+#         return render_template('404.html', error_code=401, error_text="您不是管理员")
+#     return render_template('admin.html')
 
 
-@app.route('/admin_video/<stu_no>', methods=['GET'])
-def admin_video(stu_no):
-    if not current_user.is_authenticated:
-        return render_template('404.html', error_code=401, error_text='请先登录')
-    elif current_user.stu_userlevel != User_level.Admin.value:
-        return render_template('404.html', error_code=401, error_text="您不是管理员")
-    return render_template('admin_video.html', stu_no=stu_no)
+# @app.route('/admin_video/<stu_no>', methods=['GET'])
+# def admin_video(stu_no):
+#     if not current_user.is_authenticated:
+#         return render_template('404.html', error_code=401, error_text='请先登录')
+#     elif current_user.stu_userlevel != User_level.Admin.value:
+#         return render_template('404.html', error_code=401, error_text="您不是管理员")
+#     return render_template('admin_video.html', stu_no=stu_no)
 
 
-@app.route('/video', methods=['GET'])
-def video():
-    if not current_user.is_authenticated:
-        return render_template('404.html', error_code=401, error_text="请先登录")
-    if current_user.stu_userlevel == User_level.Admin.value:
-        return redirect('admin')
-    return render_template('video.html')
+# @app.route('/video', methods=['GET'])
+# def video():
+#     if not current_user.is_authenticated:
+#         return render_template('404.html', error_code=401, error_text="请先登录")
+#     if current_user.stu_userlevel == User_level.Admin.value:
+#         return redirect('admin')
+#     return render_template('video.html')
 
 
-@app.route('/video_websocket', methods=['GET'])
-def video_websocket():
-    if not current_user.is_authenticated:
-        return render_template('404.html', error_code=401, error_text="请先登录")
-    if current_user.stu_userlevel == User_level.Admin.value:
-        return redirect('admin')
-    return render_template('video_websocket.html')
+# @app.route('/video_websocket', methods=['GET'])
+# def video_websocket():
+#     if not current_user.is_authenticated:
+#         return render_template('404.html', error_code=401, error_text="请先登录")
+#     if current_user.stu_userlevel == User_level.Admin.value:
+#         return redirect('admin')
+#     return render_template('video_websocket.html')
 
 
 @app.errorhandler(404)

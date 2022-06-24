@@ -20,6 +20,7 @@ def get_all_user_info():
             student_info["stu_no"]=student.stu_no
             student_info["stu_name"]=student.stu_name
             student_info["stu_class_fname"]=student.stu_class_fname
+            student_info["stu_class_sname"]=student.stu_class_sname
             student_list.append(student_info)
         resp_json={"student_info":student_list}
         return make_response_json(200,"学生信息如下",data=resp_json)
