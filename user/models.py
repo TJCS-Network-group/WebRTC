@@ -48,8 +48,8 @@ class Student(UserMixin, BaseModel):
         verbose_name="学生身份", default=User_level.Normal.value)  #（0表示考生，1表示监控者）
     stu_enable = pw.BooleanField("是否允许登录", default=False)
 
-    def check_password(self, password):
-        return check_password_hash(self.stu_password, password)
+    def check_password(self, password:str):
+        return md5(password.encode("utf-8")).hexdigest()==self.stu_password
 
     def __repr__(self):
         return '<Student类 学生学号:{}，姓名：{}>'.format(self.stu_no, self.stu_name)
