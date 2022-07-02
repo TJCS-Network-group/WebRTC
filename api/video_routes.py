@@ -109,7 +109,6 @@ def process_video(stu_no,path):
 
 
 class RecordManager:
-
     def __init__(self, account,camera):
         mkdir(RECORD_DIR + "u" + str(account))
         if camera == 'true':
@@ -121,7 +120,6 @@ class RecordManager:
             account) + "/origin-screen-" + datetime.now().strftime(
                 "%Y-%m-%d-%H-%M-%S") + ".webm"        
         self.screenOutput = open(self.screenOutputPath, "wb")  
-
 
 AccountMap = {}
 
