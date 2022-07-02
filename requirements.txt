@@ -7,7 +7,6 @@ certifi==2021.10.8
 cffi==1.11.5
 charset-normalizer==2.0.12
 click==8.0.4
-cloud-init==19.1
 configobj==5.0.6
 configparser==5.2.0
 cryptography==3.2.1
